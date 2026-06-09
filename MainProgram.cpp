@@ -1,10 +1,7 @@
 // ============================================================================
-//  Lab: C++ Templates  (STUDENT VERSION)
+//  Lab: C++ Templates
 //  Course: Object-Oriented Programming with C++
 //  Single file only. No headers. C++17.
-//
-//  Complete every TODO. Do NOT rename the functions/classes/methods,
-//  and do NOT change their signatures - the autograder depends on them.
 // ============================================================================
 
 #include <iostream>
@@ -12,132 +9,149 @@
 #include <vector>
 #include <stdexcept>
 
-// ================================
-// CLASS / TEMPLATE DEFINITIONS
-// ================================
-
-// ---- Group 1: Basic function template -------------------------------------
-// TODO 1: Write a function template maxValue that takes two values of the
-//         SAME type T and returns the larger one.
+// Group 1
 template <typename T>
 T maxValue(T a, T b) {
-    // TODO 1: return the larger of a and b
-    return a; // <-- replace
+    return (a > b) ? a : b;
 }
 
-// ---- Group 2: Function template with multiple type parameters --------------
-// TODO 2: Write a function template addValues that takes two values which may
-//         be of DIFFERENT types (T1, T2) and returns their sum.
-//         The return type must follow the usual arithmetic rules
-//         (e.g. int + double -> double). Use a trailing return type
-//         with decltype.
+// Group 2
 template <typename T1, typename T2>
 auto addValues(T1 a, T2 b) -> decltype(a + b) {
-    // TODO 2: return the sum of a and b
-    return a; // <-- replace
+    return a + b;
 }
 
-// ---- Group 3: Class template ----------------------------------------------
-// TODO 3: Complete the class template Pair that stores two values of types
-//         A and B. Implement the getters, setters, and swapValues().
+// Group 3
 template <typename A, typename B>
 class Pair {
 private:
     A first_;
     B second_;
+
 public:
-    // TODO 3a: constructor that initializes first_ and second_
-    Pair(A first, B second) {
-        // replace with member initialization
+    Pair(A first, B second) : first_(first), second_(second) {}
+
+    A getFirst() const {
+        return first_;
     }
 
-    // TODO 3b: getters (const)
-    A getFirst() const  { return A(); }   // <-- replace
-    B getSecond() const { return B(); }   // <-- replace
+    B getSecond() const {
+        return second_;
+    }
 
-    // TODO 3c: setters
-    void setFirst(A value)  { }           // <-- replace
-    void setSecond(B value) { }           // <-- replace
+    void setFirst(A value) {
+        first_ = value;
+    }
 
-    // TODO 3d: swapValues - swap first_ and second_ (assume A == B when called)
+    void setSecond(B value) {
+        second_ = value;
+    }
+
     void swapValues() {
-        // replace
+        A temp = first_;
+        first_ = static_cast<A>(second_);
+        second_ = static_cast<B>(temp);
     }
 };
 
-// ---- Group 4: Generic container -------------------------------------------
-// TODO 4: Complete the class template Box, a generic dynamic container that
-//         stores elements of type T inside a std::vector<T>.
+// Group 4
 template <typename T>
 class Box {
 private:
     std::vector<T> items_;
+
 public:
-    // TODO 4a: add an item to the back
-    void add(const T& item) { }
-
-    // TODO 4b: return number of stored items as int
-    int size() const { return 0; }        // <-- replace
-
-    // TODO 4c: return the item at index; throw std::out_of_range if invalid
-    T get(int index) const {
-        return T(); // <-- replace
+    void add(const T& item) {
+        items_.push_back(item);
     }
 
-    // TODO 4d: return the sum of all stored elements
+    int size() const {
+        return static_cast<int>(items_.size());
+    }
+
+    T get(int index) const {
+        if (index < 0 || index >= size()) {
+            throw std::out_of_range("Box index out of range");
+        }
+        return items_[index];
+    }
+
     T total() const {
-        return T(); // <-- replace
+        T sum = T();
+        for (const T& value : items_) {
+            sum += value;
+        }
+        return sum;
     }
 };
 
-// ---- Group 5: Template specialization -------------------------------------
-// TODO 5a: Generic describe() - return 1 for any non-string type.
+// Group 5
 template <typename T>
 int describe(const T& value) {
-    return 0; // <-- replace with 1
+    return 1;
 }
 
-// TODO 5b: Full specialization of describe for std::string.
-//          It must return 2 + the length of the string.
-//          Write the specialization below (template<> int describe<std::string>...).
-//
-//          <-- write your specialization here
+template <>
+int describe<std::string>(const std::string& value) {
+    return 2 + static_cast<int>(value.length());
+}
 
-// ---- Group 6: Non-type template parameter ---------------------------------
-// TODO 6: Complete FixedArray<T, N>, a stack array of compile-time size N.
+// Group 6
 template <typename T, int N>
 class FixedArray {
 private:
     T data_[N];
+
 public:
-    // TODO 6a: default-construct all N elements to T()
     FixedArray() {
-        // replace
+        for (int i = 0; i < N; ++i) {
+            data_[i] = T();
+        }
     }
 
-    // TODO 6b: return N
-    int capacity() const { return 0; }    // <-- replace
+    int capacity() const {
+        return N;
+    }
 
-    // TODO 6c: set data_[index]; throw std::out_of_range if invalid
     void set(int index, const T& value) {
-        // replace
+        if (index < 0 || index >= N) {
+            throw std::out_of_range("FixedArray index out of range");
+        }
+        data_[index] = value;
     }
 
-    // TODO 6d: return data_[index]; throw std::out_of_range if invalid
     T at(int index) const {
-        return T(); // <-- replace
+        if (index < 0 || index >= N) {
+            throw std::out_of_range("FixedArray index out of range");
+        }
+        return data_[index];
     }
 };
-
-// ================================
-// FUNCTION IMPLEMENTATIONS / main
-// ================================
 
 int main() {
     std::cout << "=== C++ Templates Lab ===\n";
 
-    // You may add your own test calls here to experiment.
     std::cout << "maxValue(3, 7) = " << maxValue(3, 7) << "\n";
+    std::cout << "addValues(5, 2.5) = " << addValues(5, 2.5) << "\n";
+
+    Pair<int, int> p(10, 20);
+    p.swapValues();
+    std::cout << "Pair after swap: " << p.getFirst() << ", " << p.getSecond() << "\n";
+
+    Box<int> box;
+    box.add(5);
+    box.add(10);
+    box.add(15);
+    std::cout << "Box total = " << box.total() << "\n";
+
+    std::cout << "describe(10) = " << describe(10) << "\n";
+    std::cout << "describe(string) = " << describe(std::string("Ali")) << "\n";
+
+    FixedArray<int, 3> arr;
+    arr.set(0, 100);
+    arr.set(1, 200);
+    std::cout << "FixedArray capacity = " << arr.capacity() << "\n";
+    std::cout << "arr[0] = " << arr.at(0) << "\n";
 
     return 0;
 }
